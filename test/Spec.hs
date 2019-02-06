@@ -1,8 +1,12 @@
+import Lib
 
 import Test.Hspec (Spec, hspec, describe, it, shouldBe)
 
 main :: IO ()
 main = hspec $ do
-  describe "player scoring" $ do
-    it "should save score of player" $ do
-      ("a" ++ "b") `shouldBe` "ab"
+  describe "concatenator" $ do
+    it "should concat" $ do
+      (concatenator "a" "b") `shouldBe` "ab"
+  describe "gameOfLife" $ do
+    it "should says alive !!!" $ do
+        gameOfLife `shouldBe` "Alive !!!"

@@ -1,9 +1,7 @@
-module Lib
-    ( gameOfLife
-    ) where
+module Lib where
 
-concat :: String -> String -> String
-concat a b = a ++ b
+concatenator :: String -> String -> String
+concatenator a b = a ++ b
 
 gameOfLife :: String
 gameOfLife = "Alive !!!"
