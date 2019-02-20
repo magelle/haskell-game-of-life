@@ -55,16 +55,35 @@ main = hspec $ do
         (nextCellState Dead 2) `shouldBe` Dead
       it "dead cell with four neighbors should stay dead" $ do
         (nextCellState Dead 4) `shouldBe` Dead
-
-  describe "Evolving" $ do
-    describe "Next Generation computation" $ do
-      it "dead cell with three neighbors is alive" $ do
-        nextGen(Grid([Line([Dead, Alive, Dead]), Line([Dead, Alive, Dead]), Line([Dead, Alive, Dead])])) `shouldBe` Grid([Line([Dead, Dead, Dead]), Line([Alive, Alive, Alive]), Line([Dead, Dead, Dead])])
   
   describe "Find Neighbors" $ do
-    it "Should remove target" $ do
-      let line = Line [Alive, Dead, Alive, Dead, Dead]
-        in (neighbors 2 line) `shouldBe` [Dead, Dead]
+    it "Should find neighbors on one line" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive, Dead, Dead])]
+        in (neighbors grid 0 2) `shouldBe` [Dead, Dead]
+    it "Should find neighbors on one line when at the beginning of the line" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive, Dead, Dead])]
+        in (neighbors grid 0 0) `shouldBe` [Dead]
+    it "Should find neighbors on one line when at the end of the line" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive, Dead, Dead])]
+        in (neighbors grid 0 4) `shouldBe` [Dead]
+    it "Should find neighbors in the  upper line" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+        in (neighbors grid 1 1) `shouldBe` [Alive, Dead, Alive, Alive, Alive]
+    it "Should find neighbors when no cells in the upper left" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+        in (neighbors grid 1 0) `shouldBe` [Alive, Dead, Dead]
+    it "Should find neighbors when no cells in the upper right" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+        in (neighbors grid 1 2) `shouldBe` [Dead, Alive, Dead]
+    it "Should find neighbors in the bottom line" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+        in (neighbors grid 0 1) `shouldBe` [Alive, Alive, Alive, Dead, Alive]
+    it "Should find neighbors when no cells in the lower left" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+        in (neighbors grid 0 0) `shouldBe` [Dead, Alive, Dead]
+    it "Should find neighbors when no cells in the lower right" $ do
+      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+        in (neighbors grid 0 2) `shouldBe` [Dead, Dead, Alive]
 
   describe "Count alive Neighbors" $ do
     describe "a single line Grid" $ do
@@ -75,4 +94,25 @@ main = hspec $ do
         let grid = (Grid [(Line [Dead, Dead, Alive, Alive, Dead, Alive]) ]) 
           in (countNeighbors grid 0 3) `shouldBe` 1
         
- 
+  describe "left" $ do
+    it "should return the left cell when available" $ do
+      (left [1, 2] 1) `shouldBe` (Just 1)
+    it "should return Nothing when not left cell" $ do
+      (left [1, 2] 0) `shouldBe` (Nothing)
+
+  describe "right" $ do
+    it "should return the right cell when available" $ do
+      (right [1, 2] 0) `shouldBe` (Just 2)
+    it "should return Nothing when no right cell" $ do
+      (right [1, 2] 1) `shouldBe` (Nothing)
+  describe "isAlive" $ do
+    it  "should return true when is Alive" $ do
+      (isAlive Alive) `shouldBe` True
+    it  "should return false when is Dead" $ do
+      (isAlive Dead) `shouldBe` False
+
+
+  describe "Evolving" $ do
+    describe "Next Generation computation" $ do
+      it "dead cell with three neighbors is alive" $ do
+        nextGen(Grid([Line([Dead, Alive, Dead]), Line([Dead, Alive, Dead]), Line([Dead, Alive, Dead])])) `shouldBe` Grid([Line([Dead, Dead, Dead]), Line([Alive, Alive, Alive]), Line([Dead, Dead, Dead])])
