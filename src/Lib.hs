@@ -1,7 +1,7 @@
 module Lib where
-
-import Data.List
 import Data.Maybe
+import Data.List
+import Data.List.Index
 
 data Cell = Alive | Dead deriving (Eq)
 instance Show Cell where
@@ -46,8 +46,14 @@ nextCellState Alive 2 = Alive
 nextCellState _ 3 = Alive
 nextCellState _ _ = Dead
 
+nextCellGen :: Grid -> Int -> Int -> Cell -> Cell
+nextCellGen grid x y cell  = nextCellState cell (countNeighbors grid x y) 
+
+nextLineGen :: Grid -> Int -> Line -> Line
+nextLineGen grid x (Line cells) = Line (imap (nextCellGen grid x) cells)
+
 nextGen :: Grid -> Grid
-nextGen grid = grid
+nextGen grid@(Grid lines)= Grid (imap (nextLineGen grid) lines)
 
 gameOfLife :: String
 gameOfLife = show(Grid([Line([Alive, Dead, Alive]), Line([Alive, Dead, Alive]), Line([Alive, Dead, Alive])]))
