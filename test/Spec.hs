@@ -17,13 +17,13 @@ main = hspec $ do
 
   describe "Grid" $ do
     it "should display a grid of one dead Cell" $ do
-        show(Line([Dead])) `shouldBe` "_"
+      showLine([Dead]) `shouldBe` "_"
     it "should display a grid of one alive Cell" $ do
-      show(Line([Alive])) `shouldBe` "O"
+      showLine([Alive]) `shouldBe` "O"
     it "should display a grid of a line Cell" $ do
-        show(Line([Dead, Dead, Alive])) `shouldBe` "__O"
+      showLine([Dead, Dead, Alive]) `shouldBe` "__O"
     it "should display a grid of multiple lines of Cells" $ do
-        show(Grid([Line([Dead, Dead, Alive]), Line([Alive, Dead, Alive])])) `shouldBe` "__O\nO_O"
+        showGrid([[Dead, Dead, Alive], [Alive, Dead, Alive]]) `shouldBe` "__O\nO_O"
 
 
   describe "Rules" $ do
@@ -58,40 +58,40 @@ main = hspec $ do
   
   describe "Find Neighbors" $ do
     it "Should find neighbors on one line" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive, Dead, Dead])]
+      let grid = [[Alive, Dead, Alive, Dead, Dead]]
         in (neighbors grid 0 2) `shouldBe` [Dead, Dead]
     it "Should find neighbors on one line when at the beginning of the line" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive, Dead, Dead])]
+      let grid = [[Alive, Dead, Alive, Dead, Dead]]
         in (neighbors grid 0 0) `shouldBe` [Dead]
     it "Should find neighbors on one line when at the end of the line" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive, Dead, Dead])]
+      let grid = [[Alive, Dead, Alive, Dead, Dead]]
         in (neighbors grid 0 4) `shouldBe` [Dead]
     it "Should find neighbors in the  upper line" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+      let grid = [[Alive, Dead, Alive],[Alive, Dead, Alive]]
         in (neighbors grid 1 1) `shouldBe` [Alive, Dead, Alive, Alive, Alive]
     it "Should find neighbors when no cells in the upper left" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+      let grid = [[Alive, Dead, Alive],[Alive, Dead, Alive]]
         in (neighbors grid 1 0) `shouldBe` [Alive, Dead, Dead]
     it "Should find neighbors when no cells in the upper right" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+      let grid = [[Alive, Dead, Alive],[Alive, Dead, Alive]]
         in (neighbors grid 1 2) `shouldBe` [Dead, Alive, Dead]
     it "Should find neighbors in the bottom line" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+      let grid = [[Alive, Dead, Alive],[Alive, Dead, Alive]]
         in (neighbors grid 0 1) `shouldBe` [Alive, Alive, Alive, Dead, Alive]
     it "Should find neighbors when no cells in the lower left" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+      let grid = [[Alive, Dead, Alive],[Alive, Dead, Alive]]
         in (neighbors grid 0 0) `shouldBe` [Dead, Alive, Dead]
     it "Should find neighbors when no cells in the lower right" $ do
-      let grid = Grid [(Line [Alive, Dead, Alive]),(Line [Alive, Dead, Alive])]
+      let grid = [[Alive, Dead, Alive],[Alive, Dead, Alive]]
         in (neighbors grid 0 2) `shouldBe` [Dead, Dead, Alive]
 
   describe "Count alive Neighbors" $ do
     describe "a single line Grid" $ do
       it "should have no neighbors" $ do
-        let grid = (Grid [(Line [Dead, Alive, Dead]) ]) 
+        let grid = [[Dead, Alive, Dead]]
           in (countNeighbors grid 0 1) `shouldBe` 0
       it "should have one neighbor" $ do
-        let grid = (Grid [(Line [Dead, Dead, Alive, Alive, Dead, Alive]) ]) 
+        let grid = [[Dead, Dead, Alive, Alive, Dead, Alive]]
           in (countNeighbors grid 0 3) `shouldBe` 1
         
   describe "left" $ do
@@ -115,4 +115,4 @@ main = hspec $ do
   describe "Evolving" $ do
     describe "Next Generation computation" $ do
       it "dead cell with three neighbors is alive" $ do
-        nextGen(Grid([Line([Dead, Alive, Dead]), Line([Dead, Alive, Dead]), Line([Dead, Alive, Dead])])) `shouldBe` Grid([Line([Dead, Dead, Dead]), Line([Alive, Alive, Alive]), Line([Dead, Dead, Dead])])
+        nextGen([[Dead, Alive, Dead], [Dead, Alive, Dead], [Dead, Alive, Dead]]) `shouldBe` [[Dead, Dead, Dead], [Alive, Alive, Alive], [Dead, Dead, Dead]]

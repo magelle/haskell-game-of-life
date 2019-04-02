@@ -8,34 +8,32 @@ instance Show Cell where
     show Alive = "O" 
     show Dead = "_" 
 
-data Grid = Grid [Line] deriving (Eq)
-instance Show Grid where
-    show (Grid lines) = intercalate "\n" (map show lines)
+type Grid = [Line]
+showGrid lines = intercalate "\n" (map showLine lines)
 
-data Line = Line [Cell] deriving (Eq)
-instance Show Line where
-    show (Line cells) = foldl (++) "" (map show cells)
+type Line = [Cell]
+showLine cells = foldl (++) "" (map show cells)
 
-neighborhood :: [Line] -> Int -> Int -> [Cell]
-neighborhood lines x y = let (Line cells) = (lines!!(x)) 
-                           in catMaybes [(left cells y), (Just (cells!!y)),  (right cells y)] 
+neighborhood :: Grid -> Int -> Int -> [Cell]
+neighborhood grid x y = let line = (grid!!(x)) 
+                           in catMaybes [(left line y), (Just (line!!y)),  (right line y)] 
 
-upperNeighbors ::  [Line] -> Int -> Int -> [Cell]
+upperNeighbors ::  Grid -> Int -> Int -> [Cell]
 upperNeighbors _ 0 _ = []
-upperNeighbors lines x y = neighborhood lines (x-1) y
+upperNeighbors grid x y = neighborhood grid (x-1) y
 
-lowerNeighbors ::  [Line] -> Int -> Int -> [Cell]
-lowerNeighbors lines y _ | y+1 >= (length lines) = []
-lowerNeighbors lines x y = neighborhood lines (x+1) y
+lowerNeighbors ::  Grid -> Int -> Int -> [Cell]
+lowerNeighbors grid y _ | y+1 >= (length grid) = []
+lowerNeighbors grid x y = neighborhood grid (x+1) y
 
-sameLineNeighbors :: [Line] -> Int -> Int -> [Cell]
-sameLineNeighbors lines x y = let (Line cells) = (lines!!x) 
-                in (catMaybes [(left cells y), (right cells y)])
+sameLineNeighbors :: Grid -> Int -> Int -> [Cell]
+sameLineNeighbors grid x y = let line = (grid!!x) 
+                in (catMaybes [(left line y), (right line y)])
 
 neighbors :: Grid -> Int -> Int -> [Cell]
-neighbors (Grid lines) x y = (upperNeighbors lines x y) 
-                                ++ (sameLineNeighbors lines x y) 
-                                ++ (lowerNeighbors lines x y)
+neighbors grid x y = (upperNeighbors grid x y) 
+                                ++ (sameLineNeighbors grid x y) 
+                                ++ (lowerNeighbors grid x y)
 
 countNeighbors :: Grid -> Int -> Int -> Int
 countNeighbors grid x y = let neighborCells = neighbors grid x y
@@ -50,13 +48,13 @@ nextCellGen :: Grid -> Int -> Int -> Cell -> Cell
 nextCellGen grid x y cell  = nextCellState cell (countNeighbors grid x y) 
 
 nextLineGen :: Grid -> Int -> Line -> Line
-nextLineGen grid x (Line cells) = Line (imap (nextCellGen grid x) cells)
+nextLineGen grid x line = imap (nextCellGen grid x) line
 
 nextGen :: Grid -> Grid
-nextGen grid@(Grid lines)= Grid (imap (nextLineGen grid) lines)
+nextGen grid = imap (nextLineGen grid) grid
 
 gameOfLife :: String
-gameOfLife = show(Grid([Line([Alive, Dead, Alive]), Line([Alive, Dead, Alive]), Line([Alive, Dead, Alive])]))
+gameOfLife = show([[Alive, Dead, Alive], [Alive, Dead, Alive], [Alive, Dead, Alive]])
 
 takeFrom :: Int -> Int -> [a] -> [a]
 takeFrom start stop = (take stop).(drop start)
