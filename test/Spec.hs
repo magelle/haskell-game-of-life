@@ -4,9 +4,6 @@ import Test.Hspec (Spec, hspec, describe, it, shouldBe)
 
 main :: IO ()
 main = hspec $ do
-  describe "Take From" $ do
-    it "should take the array from start" $ do
-      (takeFrom 1 2 [1, 2, 3, 4]) `shouldBe` [2, 3]
 
   describe "Cell" $ do
     it "should display an alive cell" $ do
@@ -93,26 +90,15 @@ main = hspec $ do
       it "should have one neighbor" $ do
         let grid = [[Dead, Dead, Alive, Alive, Dead, Alive]]
           in (countNeighbors grid 0 3) `shouldBe` 1
-        
-  describe "left" $ do
-    it "should return the left cell when available" $ do
-      (left [1, 2] 1) `shouldBe` (Just 1)
-    it "should return Nothing when not left cell" $ do
-      (left [1, 2] 0) `shouldBe` (Nothing)
-
-  describe "right" $ do
-    it "should return the right cell when available" $ do
-      (right [1, 2] 0) `shouldBe` (Just 2)
-    it "should return Nothing when no right cell" $ do
-      (right [1, 2] 1) `shouldBe` (Nothing)
-  describe "isAlive" $ do
-    it  "should return true when is Alive" $ do
-      (isAlive Alive) `shouldBe` True
-    it  "should return false when is Dead" $ do
-      (isAlive Dead) `shouldBe` False
-
 
   describe "Evolving" $ do
     describe "Next Generation computation" $ do
       it "dead cell with three neighbors is alive" $ do
         nextGen([[Dead, Alive, Dead], [Dead, Alive, Dead], [Dead, Alive, Dead]]) `shouldBe` [[Dead, Dead, Dead], [Alive, Alive, Alive], [Dead, Dead, Dead]]
+
+  describe "neighborsCoord" $ do
+    it "should return all direct neighbors" $ do
+      neighborsCoord (2, 3) `shouldBe` [(1,2),(1,3),(1,4),(2,2),(2,4),(3,2),(3,3),(3,4)]
+  describe "removeOutside" $ do
+    it "should remove all coord outside a grid" $ do
+      removeOutside [[1]] [(-1, 0), (0, -1), (0, 0), (0, 1), (1, 0)] `shouldBe` [(0, 0)]
